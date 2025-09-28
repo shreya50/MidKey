@@ -1,1 +1,4 @@
 node_modules
+.env
+/proof-server/.env
+/compact-contract/contract-info.json

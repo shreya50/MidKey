@@ -21,7 +21,7 @@ constructor(sk: Bytes<32>) {
 }
 
 /**
- * This is the CORE VERIFICATION LOGIC for your project.
+ * This is the CORE VERIFICATION LOGIC for our project.
  * A user calls this circuit to prove they know the secret key without revealing it.
  * If the circuit runs successfully, the proof is valid. If it fails, the proof is invalid.
  * This is what your 'proof-server' will trigger.
