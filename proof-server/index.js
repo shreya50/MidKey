@@ -1,82 +1,114 @@
 import { WalletBuilder } from '@midnight-ntwrk/wallet';
 import { NetworkId } from '@midnight-ntwrk/zswap';
+import { Mnemonic, PhraseSize } from '@midnight-ntwrk/wallet-sdk-hd';
 import express from 'express';
+import dotenv from 'dotenv';
 
-// --- CONFIGURATION ---
-// Contract address from deployment
-const CONTRACT_ADDRESS = '0xde848af7977698'; 
+// Load environment variables
+dotenv.config();
 
-// This is the secret key that matches the one you used to deploy the contract.
-// In a real app, the user would provide this, but we'll hardcode it for now.
-const USER_SECRET_KEY = '19830@midkey'; 
-
+// Loading configuration from environment variables
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const USER_SECRET_KEY = process.env.SECRET_KEY;
+const SERVER_SEED_PHRASE = process.env.SERVER_SEED_PHRASE;
+const PROOF_SERVER_URL = process.env.PROOF_SERVER_URL;
+const INDEXER_URL = process.env.INDEXER_URL;
+const INDEXER_WS_URL = process.env.INDEXER_WS_URL;
+const RPC_URL = process.env.RPC_URL;
+const PORT = process.env.PORT || 3001;
 const app = express();
-const port = 3001; // Port for our proof server
 
-// This is the main API endpoint that Keycloak and our frontend will call.
+// This is the main API endpoint that Keycloak will call. It performs the entire zero-knowledge proof verification flow.
 app.post('/generate-and-verify-proof', async (req, res) => {
   console.log('Received request to verify proof...');
-  
+
   let wallet;
   try {
-    // 1. CREATE A "SCRIPT WALLET" INSTANCE
-    // This uses the WalletBuilder from the docs you found. It connects to the
-    // testnet and our local proving server (which runs in Docker).
-    console.log('Building wallet...');
+    // Intiatlixzing the wallet for the server
+    console.log('... Initializing server wallet from seed phrase...');
+    // We convert our 12-word phrase into a hexadecimal seed that the WalletBuilder can use.
+    const seed = Mnemonic.toSeed(SERVER_SEED_PHRASE, PhraseSize.S12);
+
+    console.log('... Building wallet from seed...');
     wallet = await WalletBuilder.build(
-      'https://indexer.testnet-02.midnight.network/api/v1/graphql',
-      'wss://indexer.testnet-02.midnight.network/api/v1/graphql/ws',
-      'http://localhost:6300', // This is the default URL for the Compact proof server
-      'https://rpc.testnet-02.midnight.network',
-      '0000000000000000000000000000000000000000000000000000000000000000', // A generic seed for the script wallet
+      INDEXER_URL, // Public Indexer URL
+      INDEXER_WS_URL, // Public Indexer WebSocket
+      PROOF_SERVER_URL, // The local Midnight Proof Server (in Docker)
+      RPC_URL, // Public RPC Node URL
+      seed, // The seed for our server's wallet
       NetworkId.TestNet
     );
 
-    wallet.start();
-    console.log('Wallet started and syncing...');
+    await wallet.start();
+    console.log('... Wallet started and syncing with the network.');
 
-    // 2. PREPARE THE CONTRACT CALL
-    // We are telling the wallet we want to call the `verify` circuit on our deployed contract.
-    console.log(`Preparing to call 'verify' on contract: ${CONTRACT_ADDRESS}`);
+    // --- Step B: Prepare the Smart Contract Call ---
+    console.log(`... Preparing to call the 'verify' function on contract: ${CONTRACT_ADDRESS}`);
     const callRecipe = await wallet.contractCall({
       contractAddress: CONTRACT_ADDRESS,
       circuitName: 'verify',
-      args: [], // The 'verify' circuit has no public arguments
+      args: [], // Our 'verify' function has no public arguments.
       witnesses: {
-        // This is the most important part!
-        // We are providing the implementation for the `witness secretKey()` in our contract.
-        // The SDK will take this value and generate the ZK proof with it.
+        // This is where we provide the private data. The SDK uses this to
+        // generate the ZK proof without sending the secret to the blockchain.
         secretKey: USER_SECRET_KEY,
       }
     });
 
-    // 3. GENERATE THE PROOF AND SUBMIT THE TRANSACTION
-    console.log('Generating proof...');
+    // --- Step C: Generate the Proof and Submit the Transaction ---
+    console.log('... Generating the zero-knowledge proof. This may take a moment...');
     const provenTx = await wallet.proveTransaction(callRecipe);
 
-    console.log('Submitting transaction to the network...');
+    console.log('... Submitting the proven transaction to the network...');
     const submittedTx = await wallet.submitTransaction(provenTx);
     
-    console.log('Proof verified successfully! Transaction ID:', submittedTx);
-
-    // If we reach here, the `assert` in the contract passed.
+    console.log('SUCCESS! Proof verified on-chain. Transaction ID:', submittedTx);
+    
+    // If we get here, the 'assert' in our contract passed successfully.
     res.status(200).json({ success: true, transactionId: submittedTx });
 
   } catch (error) {
-    // If the `assert` in the contract fails, the transaction will fail, and we'll end up here.
-    console.error('Proof verification failed:', error.message);
+    // If the proof is wrong or the 'assert' fails, the transaction will be rejected,
+    // and the code will jump to this error block.
+    console.error('FAILED! Proof verification failed:', error.message);
     res.status(400).json({ success: false, error: error.message });
 
   } finally {
-    // 4. CLEAN UP
-    // Always close the wallet connection.
+    // --- Step D: Clean Up ---
+    // Always close the wallet connection to release resources.
     if (wallet) {
       await wallet.close();
-      console.log('Wallet connection closed.');
+      console.log('... Wallet connection closed.');
     }
   }
 });
 
-app.listen(port, () => {
-  console.log(`Proof server listening on http://localhost:${port}`);
-});
+// A helper function that runs only once when the server starts.It initializes a temporary wallet just to print its public address,
+// so you know where to send the tDUST tokens.
+async function printServerWalletAddress() {
+  console.log('Initializing server wallet to get its address...');
+  const seed = Mnemonic.toSeed(SERVER_SEED_PHRASE, PhraseSize.S12);
+  const tempWallet = await WalletBuilder.build(
+    INDEXER_URL,
+    INDEXER_WS_URL,
+    PROOF_SERVER_URL,
+    RPC_URL,
+    seed,
+    NetworkId.TestNet
+  );
+  
+  const address = await tempWallet.getAddress();
+  console.log("Midnight Proof Server Wallet");
+  console.log(`Address: ${address}`);
+  console.log("ACTION REQUIRED: Please send testnet tDUST to this address.");
+  
+  await tempWallet.close();
+
+  // Start the main API server after printing the address.
+  app.listen(PORT, () => {
+    console.log(`API server is now listening on http://localhost:${PORT}`);
+  });
+}
+
+// Start the application by calling our helper function.
+printServerWalletAddress();

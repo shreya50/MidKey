@@ -2,9 +2,9 @@
 Authentication using midnight 
 
 my-midkey-app/
-├── 📝 docker-compose.yml         # Single file to run Keycloak & other services
+├── docker-compose.yml         # Single file to run Keycloak & other services
 
-├── 📁 compact-contract/          # Your Midnight ZK smart contract
+├── compact-contract/          # Your Midnight ZK smart contract
 │   ├── src/
 │   │   └── Verifier.cts         # The main contract file written in Compact
 │   └── compact.json             # Configuration for your contract
