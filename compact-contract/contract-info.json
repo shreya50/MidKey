@@ -1,6 +1,0 @@
-{
-  "contractAddress": "0xde848af7977698",
-  "secretKey": "my-secret-password",
-  "deploymentTx": "mock-transaction-id",
-  "status": "deployed"
-}

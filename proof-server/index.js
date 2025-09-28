@@ -8,7 +8,7 @@ const CONTRACT_ADDRESS = '0xde848af7977698';
 
 // This is the secret key that matches the one you used to deploy the contract.
 // In a real app, the user would provide this, but we'll hardcode it for now.
-const USER_SECRET_KEY = 'my-secret-password'; 
+const USER_SECRET_KEY = '19830@midkey'; 
 
 const app = express();
 const port = 3001; // Port for our proof server
