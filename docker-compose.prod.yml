@@ -48,7 +48,7 @@ services:
       KC_DB_USERNAME: midkey
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KC_HOSTNAME: ${KEYCLOAK_HOSTNAME}
-      KC_HTTP_ENABLED: true
+      KC_HTTP_ENABLED: "true"
       KC_PROXY: edge
     ports:
       - "8080:8080"
