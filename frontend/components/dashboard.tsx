@@ -33,12 +33,8 @@ export function Dashboard({
   onConsentRequest,
   onLearnMore,
 }: DashboardProps) {
-  const handleDemoLogin = () => {
-    onConsentRequest({
-      name: "ConnectSphere",
-      logo: "CS",
-      permissions: ["Your Identity", "That you are over 18", "Your KYC Status"],
-    })
+  const handleGetStarted = () => {
+    onNavigate("admin-portal")
   }
 
   return (
@@ -107,8 +103,7 @@ export function Dashboard({
                   <div className="space-y-2">
                     <h3 className="text-xl font-bold text-foreground">Successfully Authenticated!</h3>
                     <p className="text-muted-foreground max-w-md">
-                      Your digital identity is secure and ready to use. Try our demo to see how seamless zero-knowledge
-                      authentication works with real applications.
+                      Your digital identity is secure and ready to use. Start integrating MidKey authentication into your applications.
                     </p>
                     <div className="flex items-center space-x-2 text-sm text-primary">
                       <Shield className="h-4 w-4" />
@@ -118,12 +113,12 @@ export function Dashboard({
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                   <Button
-                    onClick={handleDemoLogin}
+                    onClick={handleGetStarted}
                     size="lg"
                     className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 min-w-[200px]"
                   >
                     <Apps className="mr-2 h-5 w-5" />
-                    Try Demo Login
+                    Get Started
                   </Button>
                   <Button
                     onClick={onLearnMore}
@@ -136,29 +131,29 @@ export function Dashboard({
                 </div>
               </div>
 
-              {/* Demo app preview */}
+              {/* Integration guide */}
               <div className="mt-6 p-4 bg-card/50 rounded-lg border border-border/50 backdrop-blur-sm">
                 <div className="flex items-center space-x-3 mb-3">
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                    CS
+                    <Settings className="h-4 w-4" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground">ConnectSphere Demo App</h4>
-                    <p className="text-xs text-muted-foreground">Experience secure authentication in action</p>
+                    <h4 className="font-semibold text-foreground">Ready to Integrate</h4>
+                    <p className="text-xs text-muted-foreground">Start building with MidKey authentication</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                   <div className="flex items-center space-x-2 text-muted-foreground">
                     <div className="w-2 h-2 bg-green-500 rounded-full" />
-                    <span>Identity Verification</span>
+                    <span>Zero-Knowledge Proofs</span>
                   </div>
                   <div className="flex items-center space-x-2 text-muted-foreground">
                     <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                    <span>Age Verification (18+)</span>
+                    <span>Privacy-First Authentication</span>
                   </div>
                   <div className="flex items-center space-x-2 text-muted-foreground">
                     <div className="w-2 h-2 bg-purple-500 rounded-full" />
-                    <span>KYC Status Check</span>
+                    <span>Midnight Blockchain</span>
                   </div>
                 </div>
               </div>
@@ -182,7 +177,7 @@ export function Dashboard({
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">3 applications currently connected</p>
+                  <p className="text-sm text-muted-foreground">No applications connected yet</p>
                 </CardContent>
               </Card>
 
@@ -201,7 +196,7 @@ export function Dashboard({
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground">2 credentials available</p>
+                    <p className="text-sm text-muted-foreground">No credentials yet</p>
                   </CardContent>
                 </Card>
               ) : (
@@ -219,7 +214,7 @@ export function Dashboard({
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground">5 applications registered</p>
+                    <p className="text-sm text-muted-foreground">No applications registered yet</p>
                   </CardContent>
                 </Card>
               )}
@@ -238,7 +233,7 @@ export function Dashboard({
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">Free trial available</p>
+                  <p className="text-sm text-muted-foreground">Start with free trial</p>
                 </CardContent>
               </Card>
             </div>
@@ -282,11 +277,11 @@ export function Dashboard({
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Role</span>
-                    <span className="text-foreground">Admin</span>
+                    <span className="text-foreground">User</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Permissions</span>
-                    <span className="text-foreground">Full Access</span>
+                    <span className="text-foreground">Standard</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Last Login</span>
@@ -315,7 +310,7 @@ export function Dashboard({
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Trust Score</span>
-                    <span className="text-success font-medium">Excellent</span>
+                    <span className="text-foreground">New</span>
                   </div>
                 </div>
               </CardContent>
@@ -330,20 +325,9 @@ export function Dashboard({
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center space-x-3 text-sm">
-                  <div className="w-2 h-2 bg-success rounded-full" />
-                  <span className="text-muted-foreground">Successful ZK proof verification</span>
-                  <span className="text-xs text-muted-foreground ml-auto">2 minutes ago</span>
-                </div>
-                <div className="flex items-center space-x-3 text-sm">
-                  <div className="w-2 h-2 bg-primary rounded-full" />
-                  <span className="text-muted-foreground">Secure session established</span>
-                  <span className="text-xs text-muted-foreground ml-auto">2 minutes ago</span>
-                </div>
-                <div className="flex items-center space-x-3 text-sm">
-                  <div className="w-2 h-2 bg-muted rounded-full" />
-                  <span className="text-muted-foreground">Authentication request initiated</span>
-                  <span className="text-xs text-muted-foreground ml-auto">3 minutes ago</span>
+                <div className="text-center py-4 text-muted-foreground">
+                  <p>No recent activity</p>
+                  <p className="text-sm">Activity will appear here as you use the system</p>
                 </div>
               </div>
             </CardContent>

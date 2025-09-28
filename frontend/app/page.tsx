@@ -63,7 +63,7 @@ export default function Home() {
       console.log('🔐 Authentication response:', data)
 
       if (data.success) {
-        setUser("midnight_user")
+        setUser("user")
         setAuthState("logged-in")
         setCurrentView("dashboard")
         console.log('✅ Authentication successful!')
