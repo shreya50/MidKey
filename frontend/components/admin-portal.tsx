@@ -41,54 +41,9 @@ interface AdminPortalProps {
 type AdminView = "overview" | "applications" | "analytics" | "api-keys" | "billing"
 type SidebarState = "expanded" | "minimized" | "hidden"
 
-const applications = [
-  {
-    id: "app_1",
-    name: "E-commerce Platform",
-    clientId: "mk_ec_prod_123",
-    status: "Active",
-    monthlyActiveUsers: "12,450",
-    createdDate: "Jan 15, 2024",
-    lastActivity: "2 hours ago",
-  },
-  {
-    id: "app_2",
-    name: "Banking Integration",
-    clientId: "mk_bank_prod_456",
-    status: "Active",
-    monthlyActiveUsers: "8,230",
-    createdDate: "Dec 3, 2023",
-    lastActivity: "1 day ago",
-  },
-  {
-    id: "app_3",
-    name: "Healthcare Portal",
-    clientId: "mk_health_dev_789",
-    status: "Development",
-    monthlyActiveUsers: "0",
-    createdDate: "Feb 28, 2024",
-    lastActivity: "5 minutes ago",
-  },
-]
-
-const apiKeys = [
-  {
-    id: "key_1",
-    name: "Production API Key",
-    key: "mk_live_1234567890abcdef",
-    created: "Jan 15, 2024",
-    lastUsed: "2 hours ago",
-    status: "Active",
-  },
-  {
-    id: "key_2",
-    name: "Development API Key",
-    key: "mk_test_abcdef1234567890",
-    created: "Dec 3, 2023",
-    lastUsed: "1 day ago",
-    status: "Active",
-  },
-]
+// Applications and API keys will be loaded from the backend
+const applications: any[] = []
+const apiKeys: any[] = []
 
 export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
   const [currentView, setCurrentView] = useState<AdminView>("overview")
@@ -255,8 +210,8 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5</div>
-            <p className="text-xs text-muted-foreground">3 active, 2 in development</p>
+            <div className="text-2xl font-bold">0</div>
+            <p className="text-xs text-muted-foreground">No applications registered</p>
           </CardContent>
         </Card>
 
@@ -268,8 +223,8 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">20,680</div>
-            <p className="text-xs text-success">+12% from last month</p>
+            <div className="text-2xl font-bold">0</div>
+            <p className="text-xs text-muted-foreground">No users yet</p>
           </CardContent>
         </Card>
 
@@ -281,8 +236,8 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">99.8%</div>
-            <p className="text-xs text-muted-foreground">Authentication success</p>
+            <div className="text-2xl font-bold">-</div>
+            <p className="text-xs text-muted-foreground">No data available</p>
           </CardContent>
         </Card>
 
@@ -294,8 +249,8 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1.2M</div>
-            <p className="text-xs text-muted-foreground">This month</p>
+            <div className="text-2xl font-bold">0</div>
+            <p className="text-xs text-muted-foreground">No API calls yet</p>
           </CardContent>
         </Card>
       </div>
@@ -308,26 +263,10 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {applications.slice(0, 3).map((app) => (
-              <div
-                key={app.id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border border-border rounded-lg"
-              >
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-2">
-                    <h4 className="font-medium text-sm">{app.name}</h4>
-                    <Badge variant={app.status === "Active" ? "default" : "secondary"} className="text-xs">
-                      {app.status}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground">Last activity: {app.lastActivity}</p>
-                </div>
-                <div className="mt-2 sm:mt-0 text-right">
-                  <div className="text-sm font-semibold">{app.monthlyActiveUsers}</div>
-                  <p className="text-xs text-muted-foreground">MAU</p>
-                </div>
-              </div>
-            ))}
+            <div className="text-center py-8 text-muted-foreground">
+              <p>No applications registered yet</p>
+              <p className="text-sm">Register your first application to get started</p>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -528,60 +467,15 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
 
       {/* Applications Grid */}
       <div className="grid gap-4">
-        {applications.map((app) => (
-          <Card key={app.id}>
-            <CardContent className="p-4 md:p-6">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <div className="space-y-2">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                    <h3 className="font-medium text-foreground">{app.name}</h3>
-                    <Badge variant={app.status === "Active" ? "default" : "secondary"}>{app.status}</Badge>
-                  </div>
-                  <div className="space-y-1 text-sm text-muted-foreground">
-                    <p>Client ID: {app.clientId}</p>
-                    <p>Created: {app.createdDate}</p>
-                    <p>Last Activity: {app.lastActivity}</p>
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                  <div className="text-center sm:text-right">
-                    <div className="text-lg font-semibold text-foreground">{app.monthlyActiveUsers}</div>
-                    <p className="text-sm text-muted-foreground">Monthly Active Users</p>
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleConfigureApp(app.id)}
-                      className="w-full sm:w-auto justify-center sm:justify-start"
-                    >
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span className="sm:inline">Configure</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleViewAnalytics(app.id)}
-                      className="w-full sm:w-auto justify-center sm:justify-start"
-                    >
-                      <BarChart3 className="mr-2 h-4 w-4" />
-                      <span className="sm:inline">Analytics</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEditApp(app.id)}
-                      className="w-full sm:w-auto justify-center sm:justify-start"
-                    >
-                      <Edit className="mr-2 h-4 w-4" />
-                      <span className="sm:inline">Edit</span>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <div className="text-center py-12 text-muted-foreground">
+          <Settings className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          <h3 className="text-lg font-medium mb-2">No Applications Yet</h3>
+          <p className="mb-4">Register your first application to start using MidKey authentication</p>
+          <Button onClick={handleRegisterApp} className="bg-primary hover:bg-primary/90">
+            <Plus className="mr-2 h-4 w-4" />
+            Register First Application
+          </Button>
+        </div>
       </div>
     </div>
   )
@@ -601,8 +495,8 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
             <CardDescription>Last 30 days</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-foreground">1,234,567</div>
-            <p className="text-sm text-success">+15.3% from last month</p>
+            <div className="text-3xl font-bold text-foreground">0</div>
+            <p className="text-sm text-muted-foreground">No requests yet</p>
           </CardContent>
         </Card>
 
@@ -612,8 +506,8 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
             <CardDescription>Authentication success</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-foreground">99.8%</div>
-            <p className="text-sm text-muted-foreground">Industry leading</p>
+            <div className="text-3xl font-bold text-foreground">-</div>
+            <p className="text-sm text-muted-foreground">No data available</p>
           </CardContent>
         </Card>
 
@@ -623,8 +517,8 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
             <CardDescription>API response latency</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-foreground">120ms</div>
-            <p className="text-sm text-success">-5ms from last month</p>
+            <div className="text-3xl font-bold text-foreground">-</div>
+            <p className="text-sm text-muted-foreground">No data available</p>
           </CardContent>
         </Card>
       </div>
@@ -636,21 +530,9 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
           <CardDescription>Authentication requests per application</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {applications.map((app) => (
-              <div key={app.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
-                <div>
-                  <h4 className="font-medium">{app.name}</h4>
-                  <p className="text-sm text-muted-foreground">{app.monthlyActiveUsers} MAU</p>
-                </div>
-                <div className="text-right">
-                  <div className="font-semibold">
-                    {app.status === "Active" ? Math.floor(Math.random() * 50000 + 10000).toLocaleString() : "0"}
-                  </div>
-                  <p className="text-sm text-muted-foreground">Requests</p>
-                </div>
-              </div>
-            ))}
+          <div className="text-center py-8 text-muted-foreground">
+            <p>No applications registered yet</p>
+            <p className="text-sm">Register applications to see usage analytics</p>
           </div>
         </CardContent>
       </Card>
@@ -672,83 +554,15 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
 
       {/* API Keys List */}
       <div className="space-y-4">
-        {apiKeys.map((key) => (
-          <Card key={key.id}>
-            <CardContent className="p-4 md:p-6">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                <div className="space-y-2">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                    <h3 className="font-medium text-foreground">{key.name}</h3>
-                    <Badge variant="default">{key.status}</Badge>
-                  </div>
-                  <div className="space-y-1 text-sm text-muted-foreground">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                      <span>Key:</span>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <code className="bg-muted px-2 py-1 rounded text-xs font-mono break-all">
-                          {showApiKey === key.id ? key.key : key.key.replace(/./g, "•").slice(0, 20) + "..."}
-                        </code>
-                        <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setShowApiKey(showApiKey === key.id ? null : key.id)}
-                            className="h-8 w-8 p-0"
-                          >
-                            {showApiKey === key.id ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => copyToClipboard(key.key, key.id)}
-                            className="h-8 w-8 p-0"
-                          >
-                            {copiedKey === key.id ? (
-                              <Check className="h-4 w-4 text-green-500" />
-                            ) : (
-                              <Copy className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                    <p>Created: {key.created}</p>
-                    <p>Last Used: {key.lastUsed}</p>
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleEditApiKey(key.id)}
-                    className="w-full sm:w-auto justify-center sm:justify-start"
-                  >
-                    <Edit className="mr-2 h-4 w-4" />
-                    <span className="sm:inline">Edit</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDownloadApiKey(key.id, key.name)}
-                    className="w-full sm:w-auto justify-center sm:justify-start"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    <span className="sm:inline">Download</span>
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleRevokeApiKey(key.id)}
-                    className="w-full sm:w-auto justify-center sm:justify-start"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    <span className="sm:inline">Revoke</span>
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <div className="text-center py-12 text-muted-foreground">
+          <Key className="h-12 w-12 mx-auto mb-4 opacity-50" />
+          <h3 className="text-lg font-medium mb-2">No API Keys Yet</h3>
+          <p className="mb-4">Generate your first API key to start integrating with MidKey</p>
+          <Button onClick={handleGenerateApiKey} className="bg-primary hover:bg-primary/90">
+            <Plus className="mr-2 h-4 w-4" />
+            Generate First API Key
+          </Button>
+        </div>
       </div>
 
       {showGenerateKeyForm && (
@@ -803,12 +617,12 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
         <CardContent>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h3 className="text-xl font-semibold">Professional Plan</h3>
-              <p className="text-muted-foreground">Up to 100,000 monthly active users</p>
+              <h3 className="text-xl font-semibold">Free Trial</h3>
+              <p className="text-muted-foreground">Up to 100 monthly active users</p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold">$99/month</div>
-              <p className="text-sm text-muted-foreground">Billed monthly</p>
+              <div className="text-2xl font-bold">$0/month</div>
+              <p className="text-sm text-muted-foreground">14-day trial</p>
             </div>
           </div>
         </CardContent>
@@ -822,11 +636,11 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
             <CardDescription>Current billing period</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">20,680</div>
+            <div className="text-2xl font-bold">0</div>
             <div className="w-full bg-muted rounded-full h-2 mt-2">
-              <div className="bg-primary h-2 rounded-full" style={{ width: "20.68%" }}></div>
+              <div className="bg-primary h-2 rounded-full" style={{ width: "0%" }}></div>
             </div>
-            <p className="text-sm text-muted-foreground mt-1">20.68% of 100,000 limit</p>
+            <p className="text-sm text-muted-foreground mt-1">0% of 100 limit</p>
           </CardContent>
         </Card>
 
@@ -836,8 +650,8 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
             <CardDescription>This month</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1.2M</div>
-            <p className="text-sm text-success">Unlimited on your plan</p>
+            <div className="text-2xl font-bold">0</div>
+            <p className="text-sm text-muted-foreground">No requests yet</p>
           </CardContent>
         </Card>
 
@@ -847,8 +661,8 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
             <CardDescription>Automatic renewal</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Mar 15</div>
-            <p className="text-sm text-muted-foreground">2024</p>
+            <div className="text-2xl font-bold">-</div>
+            <p className="text-sm text-muted-foreground">No billing yet</p>
           </CardContent>
         </Card>
       </div>
@@ -860,37 +674,9 @@ export function AdminPortal({ user, onLogout, onNavigate }: AdminPortalProps) {
           <CardDescription>Your recent invoices and payments</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {[
-              { date: "Feb 15, 2024", amount: "$99.00", status: "Paid", invoice: "INV-001" },
-              { date: "Jan 15, 2024", amount: "$99.00", status: "Paid", invoice: "INV-002" },
-              { date: "Dec 15, 2023", amount: "$99.00", status: "Paid", invoice: "INV-003" },
-            ].map((bill, index) => (
-              <div
-                key={index}
-                className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border border-border rounded-lg"
-              >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{bill.invoice}</span>
-                    <Badge variant="default">{bill.status}</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{bill.date}</p>
-                </div>
-                <div className="flex items-center gap-4 mt-2 sm:mt-0">
-                  <span className="font-semibold">{bill.amount}</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDownloadInvoice(bill.invoice, bill.date, bill.amount)}
-                    className="hover:bg-muted transition-colors"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Download
-                  </Button>
-                </div>
-              </div>
-            ))}
+          <div className="text-center py-8 text-muted-foreground">
+            <p>No billing history yet</p>
+            <p className="text-sm">Billing will appear here once you upgrade from the free trial</p>
           </div>
         </CardContent>
       </Card>

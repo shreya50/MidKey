@@ -8,6 +8,15 @@
     "compact": "compact compile compact-contract/src/Verifier.compact compact-contract/src/managed/Verifier",
     "deploy": "compact deploy compact-contract/src/managed/Verifier",
     "keygen": "compact keygen --out ./compact-contract/src/Verifier/keys",
+    "build": "npm run build:frontend && npm run build:proof-server",
+    "build:frontend": "cd frontend && npm run build",
+    "build:proof-server": "cd proof-server && npm install --production",
+    "start": "docker-compose -f docker-compose.prod.yml up -d",
+    "stop": "docker-compose -f docker-compose.prod.yml down",
+    "restart": "npm run stop && npm run start",
+    "logs": "docker-compose -f docker-compose.prod.yml logs -f",
+    "health": "curl -f http://localhost/health && curl -f http://localhost:3000/api/health && curl -f http://localhost:3001/health",
+    "deploy:prod": "./deploy.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
