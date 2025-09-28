@@ -1,0 +1,62 @@
+pragma language_version 0.17.0;
+
+import CompactStandardLibrary;
+
+// --- Ledger State ---
+// We only need to store the public "hash" of a user's secret.
+// This acts as their registered identity on-chain.
+
+export ledger authority: Bytes<32>; // The public hash of the user's private secret.
+export ledger round: Counter;       // A counter to prevent linking transactions from the same user.
+
+/**
+ * The constructor is called only ONCE when you deploy the contract.
+ * It registers the first user's identity by storing the hash of their secret key.
+ * @param sk The user's private secret key, provided during deployment.
+ */
+constructor(sk: Bytes<32>) {
+  // We calculate the public key (pk) from the secret key (sk) and disclose it.
+  // "disclose" makes the result public and stores it in the 'authority' ledger field.
+  authority = disclose(publicKey(round, sk));
+}
+
+/**
+ * This is the CORE VERIFICATION LOGIC for your project.
+ * A user calls this circuit to prove they know the secret key without revealing it.
+ * If the circuit runs successfully, the proof is valid. If it fails, the proof is invalid.
+ * This is what your 'proof-server' will trigger.
+ */
+export circuit verify(): [] {
+  // 1. Get the user's secret key from their local machine via a witness.
+  //    This key NEVER touches the public blockchain.
+  const sk = secretKey();
+
+  // 2. Re-calculate the public key (pk) using the same hashing logic as the constructor.
+  const pk = publicKey(round, sk);
+
+  // 3. Assert that the calculated pk matches the 'authority' stored on-chain.
+  //    If they match, the user has proven they know the secret. The circuit succeeds.
+  //    If they don't match, this assert fails, and the entire transaction is reverted.
+  assert(authority == pk, "Verification failed: Invalid secret key.");
+
+  // 4. Increment the round to enhance privacy for the next verification.
+  round.increment(1);
+}
+
+// --- Helper Circuit & Witness ---
+
+/**
+ * A private witness function that asks the user's local machine for the secret key.
+ * This is implemented by your DApp/backend, not in the contract.
+ */
+witness secretKey(): Bytes<32>;
+
+/**
+ * A helper circuit that creates a unique, persistent hash from a secret key and the current round.
+ * This turns a private secret into a public identifier.
+ */
+circuit publicKey(round: Field, sk: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>(
+    [pad(32, "midkey:verifier:pk"), round as Bytes<32>, sk]
+  );
+}
