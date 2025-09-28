@@ -4,10 +4,12 @@
   "description": "Authentication using midnight",
   "main": "index.js",
   "devDependencies": {},
- "scripts": {
-  "compact": "compact compile compact-contract/src/Verifier.compact compact-contract/src/managed/Verifier",
-  "test": "echo \"Error: no test specified\" && exit 1"
-},
+  "scripts": {
+    "compact": "compact compile compact-contract/src/Verifier.compact compact-contract/src/managed/Verifier",
+    "deploy": "compact deploy compact-contract/src/managed/Verifier",
+    "keygen": "compact keygen --out ./compact-contract/src/Verifier/keys",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shreya50/MidKey.git"
@@ -19,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/shreya50/MidKey/issues"
   },
-  "homepage": "https://github.com/shreya50/MidKey#readme"
+  "homepage": "https://github.com/shreya50/MidKey#readme",
+  "dependencies": {
+    "@midnight-ntwrk/wallet": "5.0.0"
+  }
 }
