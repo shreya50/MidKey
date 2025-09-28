@@ -17,7 +17,7 @@ import {
 interface DashboardProps {
   user: string | null
   onLogout: () => void
-  onNavigate: (view: "dashboard" | "connected-apps" | "admin-portal" | "certificates" | "pricing") => void
+  onNavigate: (view: "dashboard" | "connected-apps" | "admin-portal" | "certificates" | "pricing" | "documentation") => void
   userType: "user" | "admin"
   onToggleUserType: () => void
   onConsentRequest: (app: { name: string; logo: string; permissions: string[] }) => void
@@ -124,6 +124,7 @@ export function Dashboard({
                     Try Demo Login
                   </Button>
                   <Button
+                    onClick={onLearnMore}
                     variant="outline"
                     size="lg"
                     className="border-primary/30 text-primary hover:bg-primary/10 min-w-[140px] bg-transparent"

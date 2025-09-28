@@ -8,9 +8,10 @@ interface MarketingHomepageProps {
   onLogin: () => void
   onSignUp: () => void
   hasAccount: boolean
+  onLearnMore: () => void
 }
 
-export function MarketingHomepage({ onLogin, onSignUp, hasAccount }: MarketingHomepageProps) {
+export function MarketingHomepage({ onLogin, onSignUp, hasAccount, onLearnMore }: MarketingHomepageProps) {
   return (
     <div className="min-h-screen">
       {/* Navigation */}

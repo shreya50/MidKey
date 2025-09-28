@@ -11,6 +11,7 @@ import { Pricing } from "@/components/pricing"
 import { OnboardingFlow } from "@/components/onboarding-flow"
 import { ConsentModal } from "@/components/consent-modal"
 import { MarketingHomepage } from "@/components/marketing-homepage"
+import { Documentation } from "@/components/documentation"
 
 export default function Home() {
   const [authState, setAuthState] = useState<"logged-out" | "verifying" | "logged-in" | "onboarding">("logged-out")
@@ -24,6 +25,7 @@ export default function Home() {
     | "marketing"
     | "consent"
     | "onboarding"
+    | "documentation"
   >("marketing")
   const [userType, setUserType] = useState<"user" | "admin">("user")
   const [onboardingStep, setOnboardingStep] = useState<"welcome" | "secure" | "recovery" | "complete">("welcome")
@@ -42,16 +44,41 @@ export default function Home() {
     setCurrentView("marketing")
   }
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setAuthState("verifying")
     setShowLoginModal(false)
 
-    // Simulate ZK proof generation and verification
-    setTimeout(() => {
-      setUser("midnight_user")
-      setAuthState("logged-in")
-      setCurrentView("dashboard") // Set current view to dashboard after successful login
-    }, 3000)
+    try {
+      console.log('🔐 Starting real authentication...')
+      
+      // Call our API route which connects to the proof server
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await response.json()
+      console.log('🔐 Authentication response:', data)
+
+      if (data.success) {
+        setUser("midnight_user")
+        setAuthState("logged-in")
+        setCurrentView("dashboard")
+        console.log('✅ Authentication successful!')
+      } else {
+        console.log('❌ Authentication failed:', data.message)
+        setAuthState("logged-out")
+        setShowLoginModal(true)
+        alert(`Authentication failed: ${data.message}`)
+      }
+    } catch (error) {
+      console.error('❌ Authentication error:', error)
+      setAuthState("logged-out")
+      setShowLoginModal(true)
+      alert('Authentication service unavailable. Please try again.')
+    }
   }
 
   const handleShowLogin = () => {
@@ -65,7 +92,15 @@ export default function Home() {
   }
 
   const handleNavigation = (
-    view: "dashboard" | "connected-apps" | "admin-portal" | "certificates" | "pricing" | "marketing" | "consent",
+    view:
+      | "dashboard"
+      | "connected-apps"
+      | "admin-portal"
+      | "certificates"
+      | "pricing"
+      | "marketing"
+      | "consent"
+      | "documentation",
   ) => {
     setCurrentView(view)
   }
@@ -96,10 +131,19 @@ export default function Home() {
     setConsentApp(null)
   }
 
+  const handleLearnMore = () => {
+    setCurrentView("documentation")
+  }
+
   return (
     <main className="min-h-screen">
       {currentView === "marketing" && (
-        <MarketingHomepage onLogin={handleShowLogin} onSignUp={handleStartOnboarding} hasAccount={hasAccount} />
+        <MarketingHomepage
+          onLogin={handleShowLogin}
+          onSignUp={handleStartOnboarding}
+          onLearnMore={handleLearnMore}
+          hasAccount={hasAccount}
+        />
       )}
 
       {currentView === "onboarding" && (
@@ -156,6 +200,7 @@ export default function Home() {
               userType={userType}
               onToggleUserType={toggleUserType}
               onConsentRequest={handleConsentRequest}
+              onLearnMore={handleLearnMore}
             />
           )}
           {currentView === "connected-apps" && (
@@ -168,6 +213,9 @@ export default function Home() {
             <Certificates user={user} onLogout={handleLogout} onNavigate={handleNavigation} />
           )}
           {currentView === "pricing" && <Pricing user={user} onLogout={handleLogout} onNavigate={handleNavigation} />}
+          {currentView === "documentation" && (
+            <Documentation user={user} onLogout={handleLogout} onNavigate={handleNavigation} />
+          )}
         </>
       )}
     </main>
