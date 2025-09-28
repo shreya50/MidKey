@@ -21,6 +21,7 @@ interface DashboardProps {
   userType: "user" | "admin"
   onToggleUserType: () => void
   onConsentRequest: (app: { name: string; logo: string; permissions: string[] }) => void
+  onLearnMore: () => void
 }
 
 export function Dashboard({
@@ -30,6 +31,7 @@ export function Dashboard({
   userType,
   onToggleUserType,
   onConsentRequest,
+  onLearnMore,
 }: DashboardProps) {
   const handleDemoLogin = () => {
     onConsentRequest({
