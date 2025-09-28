@@ -1,0 +1,23 @@
+{
+  "name": "midkey",
+  "version": "1.0.0",
+  "description": "Authentication using midnight",
+  "main": "index.js",
+  "devDependencies": {},
+ "scripts": {
+  "compact": "compact compile compact-contract/src/Verifier.compact compact-contract/src/managed/Verifier",
+  "test": "echo \"Error: no test specified\" && exit 1"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shreya50/MidKey.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/shreya50/MidKey/issues"
+  },
+  "homepage": "https://github.com/shreya50/MidKey#readme"
+}
