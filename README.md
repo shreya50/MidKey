@@ -37,6 +37,66 @@ MidKey replaces passwords with **cryptographic proofs** that allow users to prov
 
 ---
 
+## **Production Deployment**
+
+MidKey is now production-ready with comprehensive security, monitoring, and deployment automation.
+
+### Quick Production Setup
+
+1. **Configure Environment**
+   ```bash
+   cp production.env.example production.env
+   # Edit production.env with your production values
+   ```
+
+2. **Set up SSL certificates**
+   ```bash
+   mkdir -p ssl
+   # Place your SSL certificates in ./ssl/
+   ```
+
+3. **Deploy to Production**
+   ```bash
+   chmod +x deploy.sh
+   ./deploy.sh
+   ```
+
+### Production Features
+
+- **Security**: Rate limiting, security headers, CORS, input validation
+- **Monitoring**: Health checks, structured logging, error tracking
+- **Scalability**: Docker containers, load balancer ready, horizontal scaling
+- **Database**: PostgreSQL with proper schema, indexes, and connection pooling
+- **Caching**: Redis for sessions and caching
+- **Reverse Proxy**: Nginx with SSL termination and security headers
+
+### Service Endpoints
+
+- Frontend: http://localhost:3000
+- API: http://localhost:3001  
+- Keycloak: http://localhost:8080
+- Nginx: http://localhost
+
+### Management Commands
+
+```bash
+# View logs
+docker-compose -f docker-compose.prod.yml logs -f
+
+# Stop services
+docker-compose -f docker-compose.prod.yml down
+
+# Restart services
+docker-compose -f docker-compose.prod.yml restart
+
+# Check health
+npm run health
+```
+
+For detailed production deployment instructions, see [PRODUCTION.md](PRODUCTION.md).
+
+---
+
 ## **Quick Start**
 
 ### Prerequisites
